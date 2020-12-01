@@ -51,6 +51,43 @@ import com.liferay.blade.cli.util.BladeUtil;
  */
 public class MavenUtil {
 
+	public static Properties getMavenConfiguration(File pomFile) {
+		try {
+			Properties configurations = new Properties();
+
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+
+			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+			Document document = documentBuilder.parse(pomFile);
+
+			Element documentElement = document.getDocumentElement();
+
+			documentElement.normalize();
+
+			NodeList configurationsNodeList = document.getElementsByTagName("configuration");
+
+			Node configurationsNode = configurationsNodeList.item(0);
+
+			if (configurationsNode.getNodeType() == Node.ELEMENT_NODE) {
+				NodeList nodeList = configurationsNode.getChildNodes();
+
+				for (int nodeInt = 0; nodeInt < nodeList.getLength(); nodeInt++) {
+					Node sNode = nodeList.item(nodeInt);
+
+					if (sNode.getNodeType() == Node.ELEMENT_NODE) {
+						configurations.put(sNode.getNodeName(), sNode.getTextContent());
+					}
+				}
+			}
+
+			return configurations;
+		}
+		catch (Throwable th) {
+			throw new RuntimeException("Unable to get maven configurations", th);
+		}
+	}
+
 	public static Properties getMavenProperties(File baseDir) {
 		try {
 			Properties properties = new Properties();
@@ -89,6 +126,12 @@ public class MavenUtil {
 	}
 
 	public static File getPomXMLFile(File dir) {
+		File workspaceDir = getWorkspaceDir(dir);
+
+		if (workspaceDir == null) {
+			return new File(dir, _POM_XML_FILE_NAME);
+		}
+
 		return new File(getWorkspaceDir(dir), _POM_XML_FILE_NAME);
 	}
 

@@ -101,11 +101,11 @@ public class ConvertCommand extends BaseCommand<ConvertArgs> implements FilesSup
 
 		Properties gradleProperties = workspaceProviderGradle.getGradleProperties(projectDir);
 
-		final File pluginsSdkDir = _getPluginsSdkDir(convertArgs, projectDir, gradleProperties);
+		final File pluginsSdkDir = getPluginsSdkDir(convertArgs, projectDir, gradleProperties);
 
-		_assertTrue("pluginsSdkDir is null: %s", pluginsSdkDir != null);
-		_assertTrue(String.format("pluginsSdkDir does not exist: %s", pluginsSdkDir), pluginsSdkDir.exists());
-		_assertTrue(
+		assertTrue("pluginsSdkDir is null: %s", pluginsSdkDir != null);
+		assertTrue(String.format("pluginsSdkDir does not exist: %s", pluginsSdkDir), pluginsSdkDir.exists());
+		assertTrue(
 			String.format("pluginsSdkDir is not a valid Plugins SDK dir: %s", pluginsSdkDir),
 			_isValidSDKDir(pluginsSdkDir));
 
@@ -287,8 +287,8 @@ public class ConvertCommand extends BaseCommand<ConvertArgs> implements FilesSup
 		else {
 			File pluginDir = _findPluginDir(pluginsSdkDir, pluginName);
 
-			_assertTrue("pluginDir is null", pluginDir != null);
-			_assertTrue("pluginDir does not exists", pluginDir.exists());
+			assertTrue("pluginDir is null", pluginDir != null);
+			assertTrue("pluginDir does not exists", pluginDir.exists());
 
 			Path pluginPath = pluginDir.toPath();
 
@@ -417,7 +417,7 @@ public class ConvertCommand extends BaseCommand<ConvertArgs> implements FilesSup
 		}
 	}
 
-	private void _assertTrue(String message, boolean value) {
+	protected void assertTrue(String message, boolean value) {
 		if (!value) {
 			throw new AssertionError(message);
 		}
@@ -1096,7 +1096,7 @@ public class ConvertCommand extends BaseCommand<ConvertArgs> implements FilesSup
 		return Collections.emptyMap();
 	}
 
-	private File _getPluginsSdkDir(ConvertArgs convertArgs, File projectDir, Properties gradleProperties) {
+	protected File getPluginsSdkDir(ConvertArgs convertArgs, File projectDir, Properties gradleProperties) {
 		File pluginsSdkDir = convertArgs.getSource();
 
 		if (pluginsSdkDir == null) {
