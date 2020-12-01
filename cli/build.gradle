@@ -203,6 +203,8 @@ if (project.hasProperty("release") || project.hasProperty("snapshots")) {
 }
 
 repositories {
+	mavenLocal()
+
 	flatDir {
 		dirs "${rootProject.projectDir}/libs"
 	}
