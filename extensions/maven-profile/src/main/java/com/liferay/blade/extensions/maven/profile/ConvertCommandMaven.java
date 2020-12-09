@@ -20,10 +20,8 @@ package com.liferay.blade.extensions.maven.profile;
 import java.io.File;
 import java.util.Properties;
 
-import org.apache.maven.model.Model;
-import org.eclipse.aether.version.VersionScheme;
-
 import com.liferay.blade.cli.BladeCLI;
+import com.liferay.blade.cli.WorkspaceConstants;
 import com.liferay.blade.cli.command.BladeProfile;
 import com.liferay.blade.cli.command.ConvertArgs;
 import com.liferay.blade.cli.command.ConvertCommand;
@@ -58,11 +56,36 @@ public class ConvertCommandMaven extends ConvertCommand {
 
 		final File oldMavenProjectDir = getPluginsSdkDir(convertArgs, projectDir, gradleProperties);
 
-		assertTrue("pluginsSdkDir is null: %s", oldMavenProjectDir != null);
-		assertTrue(String.format("pluginsSdkDir does not exist: %s", oldMavenProjectDir), oldMavenProjectDir.exists());
+		assertTrue("oldMavenProjectDir is null: %s", oldMavenProjectDir != null);
+		assertTrue(String.format("oldMavenProjectDir does not exist: %s", oldMavenProjectDir), oldMavenProjectDir.exists());
 		assertTrue(
-			String.format("pluginsSdkDir is not a valid Plugins SDK dir: %s", oldMavenProjectDir),
+			String.format("oldMavenProjectDir is not a valid Plugins SDK dir: %s", oldMavenProjectDir),
 			_isLegacyMavenDir(oldMavenProjectDir));
+
+		String projectsDirPath;
+
+		String legacyDefaultWarsDir = (String)gradleProperties.get(WorkspaceConstants.DEFAULT_WARS_DIR_PROPERTY);
+
+		boolean isLegacyDefaultWarsDirSet = false;
+
+		if ((legacyDefaultWarsDir != null) && !legacyDefaultWarsDir.isEmpty()) {
+			isLegacyDefaultWarsDirSet = true;
+		}
+
+		if ((gradleProperties != null) && isLegacyDefaultWarsDirSet) {
+			projectsDirPath = gradleProperties.getProperty(WorkspaceConstants.DEFAULT_WARS_DIR_PROPERTY);
+		}
+		else {
+			projectsDirPath = "modules";
+		}
+
+		File projectsDir = new File(projectDir, projectsDirPath);
+
+		projectsDir.mkdir();
+
+		
+
+		
 
 		File[] childProjects = oldMavenProjectDir.listFiles();
 
